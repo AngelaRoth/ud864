@@ -93,9 +93,12 @@
           <span class="text"> Draw a shape to search within it for homes!</span>
           <input id="toggle-drawing"  type="button" value="Drawing Tools">
         </div>
+        <!-- HR to keep page neat -->
         <hr>
         <div>
+          <!-- NOTE: Another INPUT area. zoom-to-area-text prompts user to focus on an area of the city (gets new CSS, too). -->
           <input id="zoom-to-area-text" type="text" placeholder="Enter your favorite area!">
+          <!-- NOTE: ZOOM BUTTON -->
           <input id="zoom-to-area" type="button" value="Zoom">
         </div>
       </div>
@@ -255,6 +258,7 @@
           toggleDrawing(drawingManager);
         });
 
+        // NOTE: create an event listener in our initialize function, so when zoom-to-area button is clicked we call zoomToArea() function.
         document.getElementById('zoom-to-area').addEventListener('click', function() {
           zoomToArea();
         });
@@ -389,6 +393,13 @@
       // This function takes the input value in the find nearby area text input
       // locates it, and then zooms into that area. This is so that the user can
       // show all listings, then decide to focus on one area of the map.
+
+      // NOTE: function takes the user entered address, geocodes it to get the lat-long, and then centers the map on that lat-long and zooms in.
+      // 1. Create a new geocoder instance.
+      // 2. Capture user-entered address (value of zoom-to-area-text)
+      // 3. Make sure it isn't blank.
+      // 4. Geocode that address (using geocode() on our geocoder). Here, we are including a component restriction to keep it to addresses within 'New York.' After we get our results, we check our geocoder status to make sure it's OK, and then we use the resulting lat-long location we get back to setCenter of map, and we also setZoom.
+      // 5. In the else, we could include the actual status code received.
       function zoomToArea() {
         // Initialize the geocoder.
         var geocoder = new google.maps.Geocoder();
