@@ -42,6 +42,7 @@
         ];
 
         var largeInfowindow = new google.maps.InfoWindow();
+        // NOTE 1. We may have listings that are outside the initial zoom area; we want to be able to adjust the boundaries of the map to fit everything. We create a new LatLngBounds() instance which captures the SW and NE corners of the viewport.
         var bounds = new google.maps.LatLngBounds();
 
         // The following group uses the location array to create an array of markers on initialize.
@@ -60,12 +61,15 @@
           // Push the marker to our array of markers.
           markers.push(marker);
           // Create an onclick event to open an infowindow at each marker.
+          // NOTE: populateInfoWindow() is called on a marker, so "this" is the marker that was clicked
           marker.addListener('click', function() {
             populateInfoWindow(this, largeInfowindow);
           });
+          //NOTE 2. Then, extend the bounds for every marker that we make
           bounds.extend(markers[i].position);
         }
         // Extend the boundaries of the map for each marker
+        // NOTE 3. Finally, tell the map to fit itself to those bounds.
         map.fitBounds(bounds);
       }
 
@@ -87,7 +91,7 @@
     </script>
 
     <script async defer
-        src="https://maps.googleapis.com/maps/api/js?key=MYAPIKEY&v=3&callback=initMap">
+        src="https://maps.googleapis.com/maps/api/js?key=MyKey&v=3&callback=initMap">
     </script>
 
   </body>

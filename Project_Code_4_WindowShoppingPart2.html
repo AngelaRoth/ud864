@@ -56,6 +56,7 @@
       <div class="options-box">
         <h1>Find Your New NYC Home</h1>
         <div>
+          <!-- NOTE: Buttons to click -->
           <input id="show-listings" type="button" value="Show Listings">
           <input id="hide-listings" type="button" value="Hide Listings">
         </div>
@@ -108,6 +109,7 @@
             populateInfoWindow(this, largeInfowindow);
           });
         }
+        // NOTE: Event listeners for when buttons are clicked
         document.getElementById('show-listings').addEventListener('click', showListings);
         document.getElementById('hide-listings').addEventListener('click', hideListings);
       }
@@ -129,6 +131,7 @@
       }
 
       // This function will loop through the markers array and display them all.
+      // NOTE: We no longer set the map parameter on our markers in the initialize function; we also don't extend the bounds of our map just yet. Instead, we move that stuff into the showListings function
       function showListings() {
         var bounds = new google.maps.LatLngBounds();
         // Extend the boundaries of the map for each marker and display the marker
@@ -142,6 +145,7 @@
       // This function will loop through the listings and hide them all.
       function hideListings() {
         for (var i = 0; i < markers.length; i++) {
+          // NOTE: Setting the map to null DOESN'T DELETE THE MARKERS, it just hides them.
           markers[i].setMap(null);
         }
       }
@@ -149,7 +153,7 @@
 
     <script async defer
         src=
-        "https://maps.googleapis.com/maps/api/js?key=MYAPIKEY&v=3&callback=initMap">
+        "https://maps.googleapis.com/maps/api/js?key=MyKey&v=3&callback=initMap">
     </script>
 
   </body>

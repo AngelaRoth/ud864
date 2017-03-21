@@ -219,6 +219,17 @@
       // This function populates the infowindow when the marker is clicked. We'll only allow
       // one infowindow which will open at the marker that is clicked, and populate based
       // on that markers position.
+
+      // NOTE: Now populateInfoWindow needs to do a bit more than just create a string!
+      // 1. New streetViewService object - needs to get the panorama image based on the closest location to the marker, and it needs to find out which way to point the camera (heading and pitch)
+      // 2. We could just create a panorama object with the poition of the exact landmark of the marker, but what if there is no imagery for that exact location? This is why we define a radius of 50 meters within which to look for a StreetView image.
+      // 3. Use the streetViewService.getPanoramaByLocation() function and pass in the position of the marker, the radius, and a call to our getStreetView() function.
+      // 4. The getStreetView() function takes our "nearby StreetViewLocation" and computes a heading based on the location of the nearest StreetWiew and the location of our marker. Do this using the Google Maps Geometry Library. Load the Geometry Library when loading the API by using the Libraries parameter (Libraries=geometry) down in our script link.
+      // 5. Use the computeHeading() function to compute the correct heading, so that we're looking AT our building from the nearest StreetViewLocation.
+      // 6. When we set our panoramaOptions, we tell it that it's in the position of that nearest StreetViewLocation, and that the point of view we'll be using is going to be the heading that we just computed and a pitch of 30 (which will have us looking slightly up at the building)
+      // 7. We are going to create this panorama object and put it inside the infowindow at the div with the ID of pano.
+      // 8. If no StreetView information is found, put information into infowindow indicating that.
+      // ALTERNATELY: You can also incorporate a streetview or a non-dynamic map into your site just like any STATIC IMAGE. You can also use the streetview functionality without a map; simply use a url as the image and pass in the parameters we just discussed (location, heading, pitch, and size). If you want to include a simple, NON-INTERACTIVE MAP, you don't need to use the full JavaScript API; use the STATIC MAPS API to do so more simply and have it load more quickly
       function populateInfoWindow(marker, infowindow) {
         // Check to make sure the infowindow is not already opened on this marker.
         if (infowindow.marker != marker) {
@@ -243,6 +254,7 @@
                 var panoramaOptions = {
                   position: nearStreetViewLocation,
                   pov: {
+                    // NOTE: HEADING refers to east/west orientation of view; PITCH refers to up/down orientation. Define these things dynamically for each of our points
                     heading: heading,
                     pitch: 30
                   }
@@ -250,6 +262,7 @@
               var panorama = new google.maps.StreetViewPanorama(
                 document.getElementById('pano'), panoramaOptions);
             } else {
+              // NOTE: If no StreetView image is found...
               infowindow.setContent('<div>' + marker.title + '</div>' +
                 '<div>No Street View Found</div>');
             }
@@ -296,9 +309,10 @@
 
     </script>
 
+    <!-- NOTE that we are LOADING GEOMETRY LIBRARY libraries=geometry -->
     <script async defer
         src=
-        "https://maps.googleapis.com/maps/api/js?key=MYAPIKEY&libraries=geometry&v=3&callback=initMap">
+        "https://maps.googleapis.com/maps/api/js?key=MYKEY&libraries=geometry&v=3&callback=initMap">
     </script>
 
   </body>

@@ -70,6 +70,9 @@
 
       function initMap() {
         // Create a styles array to use with the map.
+        // NOTE: featureType refers to geographic elements of map; elementType is what about that feature you wish to change; stylers are colors and visibility properties that can be applied to features.
+        // Styles are cascading, so if you make all roads red and then make highways blue, the highways will be blue while other roads will be red.
+        // If you don't choose a style for something, the map will use the defaults.
         var styles = [
           {
             featureType: 'water',
@@ -141,7 +144,9 @@
         map = new google.maps.Map(document.getElementById('map'), {
           center: {lat: 40.7413549, lng: -73.9980244},
           zoom: 13,
+          // NOTE: Set styles property within the map object options
           styles: styles,
+          // NOTE: mapTypeControl allows the user to change the map type to road, terrain, etc.
           mapTypeControl: false
         });
 
@@ -159,6 +164,7 @@
         var largeInfowindow = new google.maps.InfoWindow();
 
         // Style the markers a bit. This will be our listing marker icon.
+        // NOTE: Two new marker icons created using simple function below...
         var defaultIcon = makeMarkerIcon('0091ff');
 
         // Create a "highlighted location" marker color for when the user
@@ -176,6 +182,7 @@
             position: position,
             title: title,
             animation: google.maps.Animation.DROP,
+            //NOTE: specify our created ICON
             icon: defaultIcon,
             id: i
           });
@@ -187,6 +194,7 @@
           });
           // Two event listeners - one for mouseover, one for mouseout,
           // to change the colors back and forth.
+          // NOTE: two event listeners for swapping out our custom icons
           marker.addListener('mouseover', function() {
             this.setIcon(highlightedIcon);
           });
@@ -251,7 +259,7 @@
 
     <script async defer
         src=
-        "https://maps.googleapis.com/maps/api/js?key=MYAPIKEY&v=3&callback=initMap">
+        "https://maps.googleapis.com/maps/api/js?key=mykey&v=3&callback=initMap">
     </script>
 
   </body>

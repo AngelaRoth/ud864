@@ -25,17 +25,30 @@
           center: {lat: 40.7413549, lng: -73.9980244},
           zoom: 13
         });
+        // A lat-long literal object
         var tribeca = {lat: 40.719526, lng: -74.0089934};
+        // Marker objects can be constructed either in the initialized function, or upon an action, like clicking a button
         var marker = new google.maps.Marker({
           position: tribeca,
+          // the map it should appear on (we named it map!)
           map: map,
           title: 'First Marker!'
+        });
+
+        // InfoWindows are pop-up displays which are shown at a given location, either with or w/o a marker; can show related text, or an image!
+        var infowindow = new google. maps.InfoWindow({
+          content: 'Me InfoWindow'
+        });
+        // Unlike Markers, InfoWindows don't open automatically, so they need an eventListener
+        // Pass in the map on which to open, and (optionally) the marker on which to anchor it. If we don't pass in a marker, we need to give infowindow a position property, so it has a place to open.
+        marker.addListener('click', function() {
+          infowindow.open(map, marker);
         });
       }
     </script>
 
     <script async defer
-        src="https://maps.googleapis.com/maps/api/js?key=MYAPIKEY&v=3&callback=initMap">
+        src="https://maps.googleapis.com/maps/api/js?key=MyKey&v=3&callback=initMap">
     </script>
 
   </body>
