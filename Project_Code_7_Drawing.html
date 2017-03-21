@@ -66,6 +66,7 @@
         font-size: 12px;
       }
 
+      /* NOTE: New CSS for our new button */
       #toggle-drawing {
         width: 27%;
         position: relative;
@@ -82,6 +83,7 @@
           <input id="hide-listings" type="button" value="Hide Listings">
           <hr>
           <span class="text"> Draw a shape to search within it for homes!</span>
+          <!-- NOTE: Create a button to allow user to toggle drawing tools on and off. -->
           <input id="toggle-drawing"  type="button" value="Drawing Tools">
         </div>
       </div>
@@ -94,6 +96,7 @@
       var markers = [];
 
       // This global polygon variable is to ensure only ONE polygon is rendered.
+      // NOTE: It is changed every time a user draws a new polygon
       var polygon = null;
 
       function initMap() {
@@ -187,6 +190,8 @@
         var largeInfowindow = new google.maps.InfoWindow();
 
         // Initialize the drawing manager.
+
+        // NOTE: We need to tell the map we're going to draw all over it, so we create a new object called the drawingManager in our initialize function. This allows us to specify multiple drawing modes and the position of the controls on the map. At first, we aren't going to set the map on the drawingManager, so essentially we're initializing it but we aren't going to have it appear right away. We're telling it that our default drawing mode (an our only drawing mode) is going to be polygon. (Other drawing modes are rectangle, circle, polyline, and marker; but polygons have the most difficult handling requirements!)
         var drawingManager = new google.maps.drawing.DrawingManager({
           drawingMode: google.maps.drawing.OverlayType.POLYGON,
           drawingControl: true,
@@ -237,6 +242,7 @@
         document.getElementById('show-listings').addEventListener('click', showListings);
         document.getElementById('hide-listings').addEventListener('click', hideListings);
 
+        // NOTE: Add an EVENT LISTENER so when toggle-drawing button is clicked, the drawing tools are either hidden or shown. Create a toggleDrawing() function for that, and pass in the drawingManager we created in the initialize function.
         document.getElementById('toggle-drawing').addEventListener('click', function() {
           toggleDrawing(drawingManager);
         });
@@ -244,6 +250,14 @@
         // Add an event listener so that the polygon is captured,  call the
         // searchWithinPolygon function. This will show the markers in the polygon,
         // and hide any outside of it.
+
+        // NOTE: Event Listener, so that when a polygon is drawn on the map, we capture those points into a polygon and use them. When the polygon is complete, we itterate through our markers array, show all the markers that are within the shape, and hide all those outside it.
+        // 1. If polygon already has a value, hide it off the map. (Alternately, we could allow multiple polygons to allow user to specify multiple zones).
+        // 2. We're going to assume the user is done drawing when the polygon is completed; then, we will switch the pointer back to normal (switch drawing mode to HAND) so that the user can click on the markers after they see them.
+        // 3. Then, we'll capture the overlay which was drawn and assign it to our polygon variable (polygon = event.overlay;).
+        // 4. Set editable to true (we could also make it draggable!)
+        // 5. Call our searchWithinPolygon() function
+        // 6. Make sure search is re-done if polygon is edited. Add two event listeners ('set_at' and 'insert_at') on the polygon itself, which check for changes and re-execute the search.
         drawingManager.addListener('overlaycomplete', function(event) {
           // First, check if there is an existing polygon.
           // If there is, get rid of it and remove the markers
@@ -343,10 +357,13 @@
       }
 
       // This shows and hides (respectively) the drawing options.
+
+      // NOTE: With this function, we're essentially saying that when a user clicks on toggleDrawing(), check the map property on the drawingManager and "swap it."
       function toggleDrawing(drawingManager) {
         if (drawingManager.map) {
           drawingManager.setMap(null);
           // In case the user drew anything, get rid of the polygon
+          // NOTE: When the user is done drawing and turns off the drawing tools, we'll assume they don't want to see their polygon anymore, so we'll remove the overlay; but we'll keep the markers that appeared.
           if (polygon !== null) {
             polygon.setMap(null);
           }
@@ -358,12 +375,14 @@
       // This function hides all markers outside the polygon,
       // and shows only the ones within it. This is so that the
       // user can specify an exact area of search.
+
+      // NOTE: This function uses the polygon that was drawn by the user, and the marker's position, and more geometry library functionality to check if polygon contains the marker.
       function searchWithinPolygon() {
         for (var i = 0; i < markers.length; i++) {
           if (google.maps.geometry.poly.containsLocation(markers[i].position, polygon)) {
-            markers[i].setMap(map);
+            markers[i].setMap(map);   // map shows marker
           } else {
-            markers[i].setMap(null);
+            markers[i].setMap(null);  // null hides marker
           }
         }
       }
