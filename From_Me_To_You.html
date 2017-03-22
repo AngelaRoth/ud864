@@ -36,15 +36,17 @@
       waypoints.push({})
 
       directions.route({
-        origin: "Florence",
-        destination: "Milan",
+        origin: "London",
+        destination: "Paris",
         travelMode: google.maps.TravelMode["DRIVING"],
+/*
         waypoints: [
           {location:"Genoa", stopover:true},
           {location:"Bologna", stopover:true},
           {location:"Venice", stopover:true}],
-        optimizeWaypoints: true
-        /*region: "it"*/
+*/
+        optimizeWaypoints: true,
+        region: "ca"
       }, function(response, status) {
         if (status !== google.maps.DirectionsStatus.OK) {
           window.alert('Error was: ', +status);
@@ -62,6 +64,6 @@
       });
     }
   </script>
-  <script src="https://maps.googleapis.com/maps/api/js?libraries=drawing,geometry&key=AIzaSyCNgnR6srI-o-L_1msz-0AA03afwiyOrxA&callback=initMap" async defer></script>
+  <script src="https://maps.googleapis.com/maps/api/js?libraries=drawing,geometry&key=KEY&callback=initMap" async defer></script>
 </body>
 </html>
