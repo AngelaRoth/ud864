@@ -1,3 +1,5 @@
+<!-- GOAL: After user looks for listings within, say, a 30 minute walk from their office, we add a button inside the info window which appears which will allow them to display the route they would take. -->
+
 <!DOCTYPE html>
 <html>
   <head>
@@ -508,6 +510,8 @@
                 atLeastOne = true;
                 // Create a mini infowindow to open immediately and contain the
                 // distance and duration
+
+                // NOTE: First, we add a "View Route" button inside the LITTLE INFO WINDOW that appears when we search for places near work. This button points to a new displayDirections() function. Because multiple listings could fall within our commute limit, we make multiple buttons; for each button, we pass in that origin. The origin that's passed is the listings address, and the destination is the user entered address.
                 var infowindow = new google.maps.InfoWindow({
                   content: durationText + ' away, ' + distanceText +
                     '<div><input type=\"button\" value=\"View Route\" onclick =' +
@@ -532,6 +536,14 @@
       // This function is in response to the user selecting "show route" on one
       // of the markers within the calculated distance. This will display the route
       // on the map.
+
+      //NOTE: Calculated directions and displays route on map
+      // 1. We initialize a new directionsService instance.
+      // 2. We recapture the user-entered destination and travel mode
+      // 3. Calculate the route (directionsService.route()), passing in the origin, destination, and travel mode
+      // 4. When we get back the response, we make sure that the status is OK, and then we create a new DirectionsRenderer(). This renderer takes care of displaying the detailed steps and polyline which we saw in the Web Service response.
+      // 5. At this point, we could display the route data to the user; we would just need to specify the HTML div to put the route in by setting the panel parameter in the DirectionsRenderer.
+      // 6. But our user here doesn't need to see the step-by-step directions. Instead, we are going to display the resulting polyline on the map. We tell it to render on our map; get the directions from our route response; and specify that route should be draggable and green
       function displayDirections(origin) {
         hideListings();
         var directionsService = new google.maps.DirectionsService;
