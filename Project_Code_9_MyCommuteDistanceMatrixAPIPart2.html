@@ -1,3 +1,5 @@
+<!-- GOAL: Expand our user control window to allow the user to specify the number of minutes they want to take to get to a certain place, whether they walk, bike, drive, or take transit. -->
+
 <!DOCTYPE html>
 <html>
   <head>
@@ -103,6 +105,7 @@
         </div>
         <hr>
         <div>
+          <!-- NOTE: New HTML giving users options for max-time and travel mode -->
           <span class="text"> Within </span>
           <select id="max-duration">
             <option value="10">10 min</option>
@@ -117,6 +120,7 @@
             <option value="TRANSIT">transit ride</option>
           </select>
           <span class="text">of</span>
+          <!-- NOTE: A place to input the address they're interested in (with an example prompt), and a GO button. With additional CSS for these IDs -->
           <input id="search-within-time-text" type="text" placeholder="Ex: Google Office NYC or 75 9th Ave, New York, NY">
           <input id="search-within-time" type="button" value="Go">
         </div>
@@ -281,6 +285,7 @@
           zoomToArea();
         });
 
+        // NOTE: As ususal, we add an event listener on the GO button
         document.getElementById('search-within-time').addEventListener('click', function() {
           searchWithinTime();
         });
@@ -444,6 +449,16 @@
       // This function allows the user to input a desired travel time, in
       // minutes, and a travel mode, and a location - and only show the listings
       // that are within that travel time (via that travel mode) of the location
+
+      //NOTE: At the high level, what this function does is use the DistandeMatrixService to calculate the distances and the durations of travel between each of our markers and the location that the user entered.
+      // 1. Create our DistandeMatrixService.
+      // 2. Capture user-entered address and check to make sure it isn't blank.
+      // 3. Create an origins array from our list of markers.
+      // 4. Use the user-entered address as the destination
+      // 5. Capture travel mode that was entered by the user.
+      // 6. Call the getDistanceMatrix() function, passing in our origins, our single destination, the travel mode, and specifying the units as imperial.
+      // 7. When we get back the response, we check to make sure the status is OK. If so, we display all the markers that fit the criteria the user entered (We do this in a separate displayMarkersWithinTime() function, because this nameless function is getting huge.)
+      // 8. If status is NOT OK, we alert user with MORE SPECIFIC ERROR MESSAGE.
       function searchWithinTime() {
         // Initialize the distance matrix service.
         var distanceMatrixService = new google.maps.DistanceMatrixService;
@@ -481,6 +496,15 @@
 
       // This function will go through each of the results, and,
       // if the distance is LESS than the value in the picker, show it on the map.
+
+      // NOTE: Parses through the response to get the useful data.
+      // 1. Recapture all of the origins and destinations from the response, and also capture that user-entered "max-duration" maximum travel duration which was in minutes.
+      // 2. A nested loop creates one element per origin and destination pair. That element is going to have a distance and a duration from point  to point B.
+      // 3. We want to capture both the distance and duration in text form because we're going to display that to our users, and we also need the value of the duration, which we're going to compare to the maximum value that was entered by the user.
+      // 4. If the duration is within that maximum value, we display the marker on the map.
+      // 5. We are also keeping track of an atLeastOne variable. This is important becaus even if we get an OK response from the getDistanceMatris function, if we don't find any markers within the acceptable commute, we want to let the user know.
+      // 6. For each marker that does appear, we create a small infowindow.
+      // 7. Also put an event listener onto each marker so that if the user clicks on it, we'll close the little info window and make room for the big one that has the streetview panorama.
       function displayMarkersWithinTime(response) {
         var maxDuration = document.getElementById('max-duration').value;
         var origins = response.originAddresses;
