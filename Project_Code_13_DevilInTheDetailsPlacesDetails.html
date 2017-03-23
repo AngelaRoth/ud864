@@ -1,3 +1,5 @@
+<!-- GOAL: Get more detail about our places. Add an OnClick event on the place markers that appear. -->
+
 <!DOCTYPE html>
 <html>
   <head>
@@ -629,6 +631,8 @@
       }
 
       // This function creates markers for each place found in either places search.
+
+      // NOTE: Add event listener to call a getPlaceDetails function for each place marker we create
       function createMarkersForPlaces(places) {
         var bounds = new google.maps.LatLngBounds();
         for (var i = 0; i < places.length; i++) {
@@ -656,6 +660,7 @@
             if (placeInfoWindow.marker == this) {
               console.log("This infowindow already is on this marker!");
             } else {
+              // NOTE: HERE, "this" is the marker
               getPlacesDetails(this, placeInfoWindow);
             }
           });
@@ -673,6 +678,13 @@
     // This is the PLACE DETAILS search - it's the most detailed so it's only
     // executed when a marker is selected, indicating the user wants more
     // details about that place.
+
+    // NOTE: Use the place ID to execute a placeDetailSearch
+    // THEN: Display a bunch of that information in an info window above the place marker.
+    // 1. Create a new PlacesService
+    // 2. Use the getDetails method
+    // 3. Check status is OK, then parse through all the data
+    // 4. Put all this data into the info window we create
     function getPlacesDetails(marker, infowindow) {
       var service = new google.maps.places.PlacesService(map);
       service.getDetails({
