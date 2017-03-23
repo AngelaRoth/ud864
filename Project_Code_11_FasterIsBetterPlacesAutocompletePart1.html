@@ -1,3 +1,5 @@
+<!-- GOAL: Update text input areas to use auto-complete -->
+
 <!DOCTYPE html>
 <html>
   <head>
@@ -210,6 +212,9 @@
         });
 
         // This autocomplete is for use in the search within time entry box.
+
+        //NOTE: Define two new places.Autocomplete instances within our initialize function, and bind them to our two input boxes. At the simplest level, these will predict what the user is typing with each keystroke and supply the most likely options in a pick list below the input box.
+        // WE CAN ALSO add more options to these, in addition to specifying which text input to execute autocomplete on. We can add BOUNDS, which is a lat-long area to bias the results towards (won't restrict results, but will favour items within those bounds). We can add a TYPES RESTRICTION, which will restrict the types of places we get back (i.e. addresses, for only precise addresses; or establishments for only business). We can add a COMPONENT restriction to restrict the results to within a certain country
         var timeAutocomplete = new google.maps.places.Autocomplete(
             document.getElementById('search-within-time-text'));
         // This autocomplete is for use in the geocoder entry box.
@@ -572,6 +577,7 @@
       }
     </script>
 
+  <!-- Include the PLACES LIBRARY! -->
     <script async defer
         src=
         "https://maps.googleapis.com/maps/api/js?libraries=places,geometry,drawing&key=MYAPIKEY&v=3&callback=initMap">
