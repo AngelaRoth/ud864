@@ -1,3 +1,5 @@
+<!-- GOAL: Add ability for user to view nearby points of interest, like restaurants, parks, museums, etc. -->
+
 <!DOCTYPE html>
 <html>
   <head>
@@ -122,6 +124,7 @@
           <input id="search-within-time" type="button" value="Go">
         </div>
         <hr>
+        <!-- NOTE: Add one last section to HTML, including new text input promptint the user to enter places of interest -->
         <div>
           <span class="text">Search for nearby places</span>
           <input id="places-search" type="text" placeholder="Ex: Pizza delivery in NYC">
@@ -141,6 +144,8 @@
 
       // Create placemarkers array to use in multiple functions to have control
       // over the number of places that show.
+
+      // NOTE: Global placeMarkers array which will allow us to control the place markers separately from our listing markers. Also makes it so we have only one set of placeMarkers on our map at a time.
       var placeMarkers = [];
 
       function initMap() {
@@ -228,7 +233,10 @@
             document.getElementById('zoom-to-area-text'));
         // Bias the boundaries within the map for the zoom to area text.
         zoomAutocomplete.bindTo('bounds', map);
+
         // Create a searchbox in order to execute a places search
+
+        // NOTE: Create a new searchBox instance in the initialize function and bind it to our newly created text input. Bias the searchBox to within the bounds of the map
         var searchBox = new google.maps.places.SearchBox(
             document.getElementById('places-search'));
         // Bias the searchbox to within the bounds of the map.
@@ -314,6 +322,8 @@
 
         // Listen for the event fired when the user selects a prediction from the
         // picklist and retrieve more details for that place.
+
+        // NOTE: Create TWO event listeners: One for when the user selects an option from the pick list, and Second for when the user types something and selects GO. Above, we created a global placeMarkers array to use in both related functions
         searchBox.addListener('places_changed', function() {
           searchBoxPlaces(this);
         });
@@ -403,6 +413,8 @@
       }
 
       // This function will loop through the listings and hide them all.
+
+      // NOTE: Expand the old hideListings function to make it generic. Passing in the markers array as a variable allows us to use this for all of our sets of markers. Now we can use this any time we want to hide an array of markers on the map.
       function hideMarkers(markers) {
         for (var i = 0; i < markers.length; i++) {
           markers[i].setMap(null);
@@ -634,6 +646,8 @@
 
       // This function fires when the user selects a searchbox picklist item.
       // It will do a nearby search using the selected query string or place.
+
+      // NOTE: Hide any markers from our last search, then find all places that match our query. We're making a separate createMarkersForPlaces() function because we will use it both here and in textSearchPlaces()
       function searchBoxPlaces(searchBox) {
         hideMarkers(placeMarkers);
         var places = searchBox.getPlaces();
@@ -646,6 +660,8 @@
 
       // This function firest when the user select "go" on the places search.
       // It will do a nearby search using the entered query string or place.
+
+      // NOTE: First, capture bounds of map. Then hide any existing placeMarkers. Then create a new PlacesService instance and run its textSearch function, passing in our user-entered query and the bounds of the map
       function textSearchPlaces() {
         var bounds = map.getBounds();
         hideMarkers(placeMarkers);
@@ -661,6 +677,13 @@
       }
 
       // This function creates markers for each place found in either places search.
+
+      // NOTE: Itterate through the array of places obtained from one of the two previous functions, and create a marker for each place. For each place, capture a bunch of info about the place, such as:
+      // A. The icon to use as a marker icon (fork and knife for restaurant, martini glass for bar, etc.)
+      // B. Place name, which we'll use as marker title
+      // C. Place location, which we'll use as marker's position
+      // D. Place ID, to use as marker ID. We can use this place ID later to get more details if a user clicks on that marker.
+      // THEN: Add event listener, push each marker we create into our placeMarkers array, and adjust the balance of the map to appropriately fit all the place markers that we return. (By default, 20 places are returned in both of these searches.)
       function createMarkersForPlaces(places) {
         var bounds = new google.maps.LatLngBounds();
         for (var i = 0; i < places.length; i++) {
